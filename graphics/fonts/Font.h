@@ -160,7 +160,49 @@ protected:
 			return Pentagram::shiftjis_to_unicode(s);
 		}
 	};
+	// UTF-8 traits for CJK (Chinese/Traditional) font support
+	struct UTF8Traits : public Traits
+	{
+		static void advance(std::string::const_iterator& i) {
+			uint8 c = static_cast<uint8>(*i);
+			if (c < 0x80) { i++;
+			} else if ((c & 0xE0) == 0xC0) { i += 2;
+			} else if ((c & 0xF0) == 0xE0) { i += 3;
+			} else { i += 4; }
+		}
+		static std::string::size_type length(const std::string& t) {
+			std::string::size_type l = 0;
+			std::string::const_iterator iter = t.begin();
+			while (iter != t.end()) { advance(iter); l++; }
+			return l;
+		}
+		static uint32 unicode(std::string::const_iterator& i) {
+			uint8 c = static_cast<uint8>(*i);
+			uint32 cp;
+			if (c < 0x80) { cp = c; i++;
+			} else if ((c & 0xE0) == 0xC0) {
+				cp = c & 0x1F; i++;
+				cp = (cp << 6) | (static_cast<uint8>(*i) & 0x3F); i++;
+			} else if ((c & 0xF0) == 0xE0) {
+				cp = c & 0x0F; i++;
+				cp = (cp << 6) | (static_cast<uint8>(*i) & 0x3F); i++;
+				cp = (cp << 6) | (static_cast<uint8>(*i) & 0x3F); i++;
+			} else {
+				cp = c & 0x07; i++;
+				cp = (cp << 6) | (static_cast<uint8>(*i) & 0x3F); i++;
+				cp = (cp << 6) | (static_cast<uint8>(*i) & 0x3F); i++;
+				cp = (cp << 6) | (static_cast<uint8>(*i) & 0x3F); i++;
+			}
+			return cp;
+		}
+		static bool canBreakAfter(std::string::const_iterator& i) {
+			uint8 c = static_cast<uint8>(*i);
+			if (c >= 0x80) return true;
+			return Traits::canBreakAfter(i);
+		}
+	};
 };
+
 
 }
 

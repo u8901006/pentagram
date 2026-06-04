@@ -40,8 +40,8 @@ static const Uint16 bullets[] = { 0x2022, 0x30FB, 0x25CF, 0 };
 
 
 TTFont::TTFont(TTF_Font* font, uint32 rgb_, int bordersize_,
-			   bool antiAliased_, bool SJIS_)
-	: ttf_font(font), antiAliased(antiAliased_), SJIS(SJIS_)
+			   bool antiAliased_, FontEncoding encoding_)
+	: ttf_font(font), antiAliased(antiAliased_), encoding(encoding_)
 {
 //	rgb = PACK_RGB8( (rgb_>>16)&0xFF , (rgb_>>8)&0xFF , rgb_&0xFF );
 	// This should be performed by PACK_RGB8, but it is not initialized at this point.
@@ -112,10 +112,12 @@ void TTFont::getStringSize(const std::string& text, int& width, int& height)
 {
 	// convert to unicode
 	uint16* unicodetext;
-	if (!SJIS)
-		unicodetext = toUnicode<Traits>(text, bullet);
-	else
+	if (encoding == FE_UTF8)
+		unicodetext = toUnicode<UTF8Traits>(text, bullet);
+	else if (encoding == FE_SJIS)
 		unicodetext = toUnicode<SJISTraits>(text, bullet);
+	else
+		unicodetext = toUnicode<Traits>(text, bullet);
 
 	TTF_SizeUNICODE(ttf_font, unicodetext, &width, &height);
 	delete[] unicodetext;
@@ -138,14 +140,18 @@ void TTFont::getTextSize(const std::string& text,
 						 bool u8specials)
 {
 	std::list<PositionedText> tmp;
-	if (!SJIS)
+	if (encoding == FE_UTF8)
+		tmp = typesetText<UTF8Traits>(this, text, remaining,
+								  width, height, align, u8specials,
+								  resultwidth, resultheight);
+	else if (encoding == FE_SJIS)
+		tmp = typesetText<SJISTraits>(this, text, remaining,
+									  width, height, align, u8specials,
+									  resultwidth, resultheight);
+	else
 		tmp = typesetText<Traits>(this, text, remaining,
 								  width, height, align, u8specials,
 								  resultwidth, resultheight);		
-	else
-		tmp = typesetText<SJISTraits>(this, text, remaining,
-									  width, height, align, u8specials,
-									  resultwidth, resultheight);		
 }
 
 
@@ -157,12 +163,16 @@ RenderedText* TTFont::renderText(const std::string& text,
 {
 	int resultwidth, resultheight;
 	std::list<PositionedText> lines;
-	if (!SJIS)
-		lines = typesetText<Traits>(this, text, remaining,
-									width, height, align, u8specials,
-									resultwidth, resultheight, cursor);
-	else
+	if (encoding == FE_UTF8)
+		lines = typesetText<UTF8Traits>(this, text, remaining,
+										width, height, align, u8specials,
+										resultwidth, resultheight, cursor);
+	else if (encoding == FE_SJIS)
 		lines = typesetText<SJISTraits>(this, text, remaining,
+											width, height, align, u8specials,
+										resultwidth, resultheight, cursor);
+	else
+		lines = typesetText<Traits>(this, text, remaining,
 										width, height, align, u8specials,
 										resultwidth, resultheight, cursor);
 
@@ -184,10 +194,12 @@ RenderedText* TTFont::renderText(const std::string& text,
 	{
 		// convert to unicode
 		uint16* unicodetext;
-		if (!SJIS)
-			unicodetext = toUnicode<Traits>(iter->text, bullet);
-		else
+		if (encoding == FE_UTF8)
+			unicodetext = toUnicode<UTF8Traits>(iter->text, bullet);
+		else if (encoding == FE_SJIS)
 			unicodetext = toUnicode<SJISTraits>(iter->text, bullet);
+		else
+			unicodetext = toUnicode<Traits>(iter->text, bullet);
 
 		// let SDL_ttf render the text
 		SDL_Surface* textsurf;

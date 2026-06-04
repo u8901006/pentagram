@@ -24,11 +24,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // This is TTF_Font struct from SDL_ttf
 typedef struct _TTF_Font TTF_Font;
 
-class TTFont : public Pentagram::Font
+// Font encoding mode
+	enum FontEncoding { FE_SINGLEBYTE, FE_SJIS, FE_UTF8 };
+
+	class TTFont : public Pentagram::Font
 {
 public:
 	TTFont(TTF_Font* font, uint32 rgb, int bordersize,
-		   bool antiAliased, bool SJIS);
+		   bool antiAliased, FontEncoding encoding);
 	virtual ~TTFont();
 
 	virtual int getHeight();
@@ -60,7 +63,7 @@ protected:
 	uint32 rgb;
 	int bordersize;
 	bool antiAliased;
-	bool SJIS;
+	FontEncoding encoding;
 
 	uint16 bullet;
 };

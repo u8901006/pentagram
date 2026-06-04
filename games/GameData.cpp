@@ -35,6 +35,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "CoreApp.h"
 #include "ConfigFileManager.h"
 #include "FontManager.h"
+#include "graphics/fonts/TTFont.h"
 #include "GameInfo.h"
 #include "SettingManager.h"
 #include "SoundFlex.h"
@@ -379,7 +380,7 @@ void GameData::loadU8Data()
 
 void GameData::setupFontOverrides()
 {
-	setupTTFOverrides("game/fontoverride", false);
+	setupTTFOverrides("game/fontoverride", FE_SINGLEBYTE);
 
 	if (gameinfo->language == GameInfo::GAMELANG_JAPANESE)
 		setupJPOverrides();
@@ -419,10 +420,17 @@ void GameData::setupJPOverrides()
 	bool ttfoverrides = false;
 	settingman->get("ttf", ttfoverrides);
 	if (ttfoverrides)
-		setupTTFOverrides("language/fontoverride", true);
+		setupTTFOverrides("language/fontoverride", FE_SJIS);
+
+	// Check for UTF-8 CJK font overrides (Chinese/Traditional)
+	std::string fontencoding;
+	settingman->get("fontencoding", fontencoding);
+	if (fontencoding == "utf8") {
+		setupTTFOverrides("language/fontoverride_utf8", FE_UTF8);
+	}
 }
 
-void GameData::setupTTFOverrides(const char* configkey, bool SJIS)
+void GameData::setupTTFOverrides(const char* configkey, FontEncoding encoding)
 {
 	ConfigFileManager* config = ConfigFileManager::get_instance();
 	SettingManager* settingman = SettingManager::get_instance();
@@ -453,7 +461,7 @@ void GameData::setupTTFOverrides(const char* configkey, bool SJIS)
 		int border = std::atoi(vals[3].c_str());
 
 		if (!fontmanager->addTTFOverride(fontnum, filename, pointsize,
-										 col32, border, SJIS))
+										 col32, border, encoding))
 		{
 			perr << "failed to setup ttf override for font " << fontnum
 				 << std::endl;

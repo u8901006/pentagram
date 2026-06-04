@@ -75,7 +75,7 @@ public:
 	};
 private:
 	void loadTranslation();
-	void setupTTFOverrides(const char* configkey, bool SJIS);
+	void setupTTFOverrides(const char* configkey, FontEncoding encoding);
 	void setupJPOverrides();
 
 	RawArchive* fixed;

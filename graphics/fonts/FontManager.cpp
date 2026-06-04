@@ -213,7 +213,7 @@ bool FontManager::loadTTFont(unsigned int fontnum, std::string filename,
 	if (!f)
 		return false;
 
-	TTFont* font = new TTFont(f, rgb, bordersize, ttf_antialiasing, false);
+	TTFont* font = new TTFont(f, rgb, bordersize, ttf_antialiasing, FE_SINGLEBYTE);
 
 	// TODO: check if this is indeed what we want for non-gamefonts
 	SettingManager* settingman = SettingManager::get_instance();
