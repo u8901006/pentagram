@@ -74,20 +74,20 @@ else
 endif
 
 # If this doesn't work, insert output of `pkg-config --cflags gtk+-win32-2.0` manually
-GTK_INCLUDES = `pkg-config --cflags gtk+-win32-2.0`
+GTK_INCLUDES = 
 # If this doesn't work, insert output of `pkg-config --libs gtk+-win32-2.0` manually
-GTK_LIBS = `pkg-config --libs gtk+-win32-2.0`
+GTK_LIBS = 
 
 # If this doesn't work, insert output of 'pkg-config --cflags gimp-2.0' manually
-GIMP_INCLUDES = `pkg-config --cflags gimpui-2.0`
+GIMP_INCLUDES = 
 # If this doesn't work, insert output of 'pkg-config --libs gimp-2.0' manually
-GIMP_LIBS = `pkg-config --libs gimpui-2.0`
+GIMP_LIBS = 
 
 ### Modify these paths
 SDL_CFLAGS:=$(shell pkg-config --cflags-only-I sdl)
 SDL_LIBS:=$(shell pkg-config --libs sdl)
 
-CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBUILTIN_DATA -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DSIZEOF_INTP=4   \
+CPPFLAGS=-DVERSION=\"$(VERSION)\" -DBUILTIN_DATA -DSIZEOF_SHORT=2 -DSIZEOF_INT=4 -DSIZEOF_LONG=4 -DSIZEOF_LONG_LONG=8 -DSIZEOF_INTP=8   \
 	-DCOMPILE_ALL_BILINEAR_SCALERS -DCOMPILE_GAMMA_CORRECT_SCALERS  \
 	-DHAVE_SYS_STAT_H -DHAVE_SYS_TYPES_H -DHAVE_UNISTD_H \
 	-DUSE_FLUIDSYNTH_MIDI -DUSE_FMOPL_MIDI -DUSE_HQ2X_SCALER -DUSE_HQ3X_SCALER -DUSE_HQ4X_SCALER \
@@ -103,7 +103,7 @@ CFLAGS=-O2
 CC=gcc
 
 LFLAGS=-static-libgcc -static-libstdc++ -mwindows
-LIBS=-lmingw32 -lfluidsynth -ldsound -lwinmm -lz -lpng $(SDL_LIBS)
+LIBS=-lmingw32 -lfluidsynth-3 -ldsound -lwinmm -lz -lpng -lSDL_ttf $(SDL_LIBS)
 
 include objects.mk
 
@@ -162,7 +162,7 @@ pentshp.exe : $(PENTSHP_OBJCS)
 	$(CXX) $(LFLAGS) -o $@ $+ $(GTK_LIBS) $(GIMP_LIBS)
 
 data/data.h: data2c.exe $(DATA_FILES)
-	data2c.exe data/data.h $(DATA_FILES)
+	./data2c.exe data/data.h $(DATA_FILES)
 
 filesys/data.o: data/data.h
 

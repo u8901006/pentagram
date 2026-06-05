@@ -142,8 +142,8 @@ void setAllocationFunctions(allocFunc a, deallocFunc d);
 }
 
 #define ENABLE_CUSTOM_MEMORY_ALLOCATION()							\
-	static void * operator new(size_t size);						\
-	static void operator delete(void * ptr);
+	void * operator new(size_t size);						\
+	void operator delete(void * ptr);
 
 #define DEFINE_CUSTOM_MEMORY_ALLOCATION(Classname)					\
 void * Classname::operator new(size_t size) {						\

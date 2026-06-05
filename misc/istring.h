@@ -78,13 +78,20 @@ public:
 	typedef _Ax _Alloc;
 	typedef typename _Alloc::size_type size_type;
 	typedef typename _Alloc::difference_type difference_type;
+	typedef typename _Alloc::value_type value_type;
+#if __cplusplus >= 201703L
+	typedef value_type* _Tptr;
+	typedef const value_type* _Ctptr;
+	typedef value_type& reference;
+	typedef const value_type& const_reference;
+#else
 	typedef typename _Alloc::pointer _Tptr;
 	typedef typename _Alloc::const_pointer _Ctptr;
-	typedef _Tptr pointer;
-	typedef _Ctptr const_pointer;
 	typedef typename _Alloc::reference reference;
 	typedef typename _Alloc::const_reference const_reference;
-	typedef typename _Alloc::value_type value_type;
+#endif
+	typedef _Tptr pointer;
+	typedef _Ctptr const_pointer;
 
 	typedef ichar_traits traits_type;
 

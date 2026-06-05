@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include <vector>
 #include <map>
+#include "Font.h"
 
 namespace Pentagram { class Font; }
 
@@ -55,10 +56,10 @@ public:
 	//! \param pointsize the pointsize to use
 	//! \param rgb the color to use for the font
 	//! \param bordersize the size of the black border to add
-	//! \param SJIS true for a Japanese game font
+	//! \param encoding font encoding (singlebyte, SJIS, or UTF-8)
 	bool addTTFOverride(unsigned int fontnum, std::string filename,
-						int pointsize, uint32 rgb, int bordersize,
-						bool SJIS=false);
+					int pointsize, uint32 rgb, int bordersize,
+					FontEncoding encoding=FE_SINGLEBYTE);
 
 	//! override a game font with a Japanese font.
 	//! \param fontnum the font to override

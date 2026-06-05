@@ -24,10 +24,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // This is TTF_Font struct from SDL_ttf
 typedef struct _TTF_Font TTF_Font;
 
-// Font encoding mode
-	enum FontEncoding { FE_SINGLEBYTE, FE_SJIS, FE_UTF8 };
+// FontEncoding enum is defined in Font.h (included above)
 
-	class TTFont : public Pentagram::Font
+class TTFont : public Pentagram::Font
 {
 public:
 	TTFont(TTF_Font* font, uint32 rgb, int bordersize,

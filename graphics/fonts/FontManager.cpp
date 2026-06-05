@@ -150,14 +150,14 @@ void FontManager::setOverride(unsigned int fontnum, Pentagram::Font* override)
 
 
 bool FontManager::addTTFOverride(unsigned int fontnum, std::string filename,
-								 int pointsize, uint32 rgb, int bordersize,
-								 bool SJIS)
+				 int pointsize, uint32 rgb, int bordersize,
+				 FontEncoding encoding)
 {
 	TTF_Font* f = getTTF_Font(filename, pointsize);
 	if (!f)
 		return false;
 
-	TTFont* font = new TTFont(f, rgb, bordersize, ttf_antialiasing, SJIS);
+	TTFont* font = new TTFont(f, rgb, bordersize, ttf_antialiasing, encoding);
 	SettingManager* settingman = SettingManager::get_instance();
 	bool highres;
 	settingman->get("ttf_highres", highres);

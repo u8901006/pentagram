@@ -31,6 +31,9 @@ struct PositionedText {
 	std::string::size_type cursor;
 };
 
+// Font encoding modes for TTFont
+enum FontEncoding { FE_SINGLEBYTE, FE_SJIS, FE_UTF8 };
+
 namespace Pentagram
 {
 

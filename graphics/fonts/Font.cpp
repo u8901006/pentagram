@@ -346,3 +346,10 @@ std::list<PositionedText> typesetText<Pentagram::Font::SJISTraits>
  unsigned int& remaining, int width, int height,
  Pentagram::Font::TextAlign align, bool u8specials,
  int& resultwidth, int& resultheight, std::string::size_type cursor);
+
+template
+std::list<PositionedText> typesetText<Pentagram::Font::UTF8Traits>
+(Pentagram::Font* font, const std::string& text,
+ unsigned int& remaining, int width, int height,
+ Pentagram::Font::TextAlign align, bool u8specials,
+ int& resultwidth, int& resultheight, std::string::size_type cursor);
