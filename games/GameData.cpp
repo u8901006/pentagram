@@ -390,11 +390,14 @@ void GameData::setupFontOverrides()
 	SettingManager* settingman = SettingManager::get_instance();
 	std::string fontencoding;
 	settingman->get("fontencoding", fontencoding);
+
 	if (fontencoding == "utf8") {
 		// Load the Chinese translation file if not already loaded
 		ConfigFileManager* config = ConfigFileManager::get_instance();
+
 		if (!config->exists("language/fontoverride_utf8")) {
-			config->readConfigFile("@data/u8chinese.ini", "language", true);
+			bool ok = config->readConfigFile("@data/u8chinese.ini", "language", true);
+
 		}
 		setupTTFOverrides("language/fontoverride_utf8", FE_UTF8);
 	}
@@ -446,6 +449,7 @@ void GameData::setupJPOverrides()
 
 void GameData::setupTTFOverrides(const char* configkey, FontEncoding encoding)
 {
+
 	ConfigFileManager* config = ConfigFileManager::get_instance();
 	SettingManager* settingman = SettingManager::get_instance();
 	FontManager* fontmanager = FontManager::get_instance();
@@ -454,9 +458,11 @@ void GameData::setupTTFOverrides(const char* configkey, FontEncoding encoding)
 
 	bool ttfoverrides = false;
 	settingman->get("ttf", ttfoverrides);
+
 	if (!ttfoverrides) return;
 
 	ttfkeyvals = config->listKeyValues(configkey);
+
 	for (iter = ttfkeyvals.begin(); iter != ttfkeyvals.end(); ++iter)
 	{
 		int fontnum = std::atoi(iter->first.c_str());
