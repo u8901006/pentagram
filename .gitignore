@@ -91,3 +91,6 @@ Makefile
 /tools/gimp-plugin/pentshp
 
 /tools/shapeconv/shapeconv
+*.ttc
+pentagram.exe
+*.o

@@ -384,6 +384,20 @@ void GameData::setupFontOverrides()
 
 	if (gameinfo->language == GameInfo::GAMELANG_JAPANESE)
 		setupJPOverrides();
+
+	// Check for UTF-8 CJK font overrides (Chinese/Traditional)
+	// This allows Chinese font overrides to work even with English game data
+	SettingManager* settingman = SettingManager::get_instance();
+	std::string fontencoding;
+	settingman->get("fontencoding", fontencoding);
+	if (fontencoding == "utf8") {
+		// Load the Chinese translation file if not already loaded
+		ConfigFileManager* config = ConfigFileManager::get_instance();
+		if (!config->exists("language/fontoverride_utf8")) {
+			config->readConfigFile("@data/u8chinese.ini", "language", true);
+		}
+		setupTTFOverrides("language/fontoverride_utf8", FE_UTF8);
+	}
 }
 
 void GameData::setupJPOverrides()
